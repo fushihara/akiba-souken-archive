@@ -35,6 +35,6 @@ export default async function Page(context: PageType) {
 export async function generateStaticParams() {
   const tagList = await new ArticleLoader().getTagList();
   return tagList.map((data, index) => {
-    return { tagName: encodeURIComponent(data.tag) };
+    return { tagName: data.tag };
   });
 }
