@@ -157,6 +157,7 @@ class Breadcrumb {
       if (isLast) {
         data.count += 1;
       } else {
+        data.count += 1;
         this.setChild(data.child, nextBreadLinks)
       }
     } else {
