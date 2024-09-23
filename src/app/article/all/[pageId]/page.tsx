@@ -149,9 +149,6 @@ export async function generateStaticParams() {
     return { pageId: `page-${index + 1}`, data: data };
   });
 }
-// export const generateStaticParams = async () => {
-//   return [{ articleid: "123" }];
-// };
 
 function chunk<T = any>(list: T[], len: number) {
   if (len <= 0) {

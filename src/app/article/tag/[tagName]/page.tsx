@@ -8,7 +8,7 @@ type PageType = {
 }
 export async function generateMetadata(context: PageType) {
   return {
-    title: `アキバ総研アーカイブ：ページ ${context.params.tagName}`,
+    title: `アキバ総研アーカイブ：タグの記事一覧 ${context.params.tagName}`,
   }
 }
 export default async function Page(context: PageType) {
@@ -35,6 +35,6 @@ export default async function Page(context: PageType) {
 export async function generateStaticParams() {
   const tagList = await new ArticleLoader().getTagList();
   return tagList.map((data, index) => {
-    return { tagName: data.name };
+    return { tagName: encodeURIComponent(data.tag) };
   });
 }
