@@ -19,9 +19,6 @@ export function NavigationHeader() {
               <Link href={"/article/all/page-1"}>記事一覧</Link>
             </li>
             <li>
-              <Link href={`/article/category`}>カテゴリ一覧</Link>
-            </li>
-            <li>
               <Link href={`/article/tag`}>タグ一覧</Link>
             </li>
             <li>
