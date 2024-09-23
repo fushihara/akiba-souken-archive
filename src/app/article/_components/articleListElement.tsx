@@ -60,12 +60,7 @@ export function ArticleListElement(displayData: DisplayData[]) {
               if (d.breadLinks.indexOf(bread) != 0) {
                 breadChildElement.push(<span>＞</span>);
               }
-              // 1つ目のパンくずリストはカテゴリだけど、2つ目以降のパンくずリストはタグと同じ
-              if (d.breadLinks.indexOf(bread) == 0) {
-                breadChildElement.push(<Link href={`/article/category/${bread}`} className="transition duration-300 ease-in-out hover:text-gray-900" key={`bread-${bread}`}>{bread}</Link>);
-              } else {
-                breadChildElement.push(<Link href={`/article/tag/${bread}`} className="transition duration-300 ease-in-out hover:text-gray-900" key={`bread-${bread}`}>{bread}</Link>);
-              }
+              breadChildElement.push(<Link href={`/article/tag/${bread}`} className="transition duration-300 ease-in-out hover:text-gray-900" key={`bread-${bread}`}>{bread}</Link>);
             }
             breadElement = (
               <span className="flex gap-0.5">
@@ -99,7 +94,7 @@ export function ArticleListElement(displayData: DisplayData[]) {
             <tr className="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100 text-sm text-gray-900 font-light">
               <td className="px-1 py-1">{d.articleId}</td>
               <td className="px-1 py-1">
-                <Link href={`/article/category/${topCategory}`} className="transition duration-300 ease-in-out hover:text-gray-900 original-href" >{topCategory}</Link>
+                <Link href={`/article/tag/${topCategory}`} className="transition duration-300 ease-in-out hover:text-gray-900 original-href" >{topCategory}</Link>
               </td>
               <td className="px-1 py-1">
                 <div>{d.title}</div>

@@ -18,9 +18,11 @@ export default async function Page(context: PageType) {
     const filterd = articles.filter(article => {
       if (article.tags.includes(nowPageTagName)) {
         return true;
-      } else {
-        return false;
       }
+      if (article.breadLinks.includes(nowPageTagName)) {
+        return true;
+      }
+      return false;
     });
     return filterd;
   });
