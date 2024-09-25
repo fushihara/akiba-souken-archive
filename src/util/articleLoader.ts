@@ -26,6 +26,26 @@ export class ArticleLoader {
     this.dataCache = loadedData;
     return loadedData;
   }
+  async getCategoryTag() {
+    const loadedData = await this._loadData();
+    return loadedData.categoryTag;
+  }
+  /**
+   * 指定のタグ、パンくずリストの記事一覧を取得
+   */
+  async getTagArticle(tagName: string) {
+    const loadedData = await this._loadData();
+    const filterdArticles = loadedData.articles.filter(article => {
+      if (article.tags.includes(tagName)) {
+        return true;
+      }
+      if (article.breadLinks.includes(tagName)) {
+        return true;
+      }
+      return false;
+    });
+    return filterdArticles;
+  }
   private async _loadData() {
     const articleJsonPath = process.env["AKIBA_SOUKEN_ARTICLE_JSON"]!;
     const jsonStr = await readFile(articleJsonPath, { encoding: "utf-8" }).then(text => {
@@ -50,47 +70,6 @@ export class ArticleLoader {
       categoryTag: categoryTagData,
     };
   }
-  /**
-   * 
-   * @returns [{tag:"タグ名",category:string,count:100}] の値。カテゴリに属していないタグはカテゴリが空文字。  
-   * カテゴリ自体を指す場合は {tag:"ホビー",category:"ホビー",count:100} の様に同じ値が入る事がある。  
-   * ソート順は未定義
-   * @deprecated
-   */
-  // async getTagList() {
-  //   const loadedData = await this.loadData();
-  //   // 先にパンくずリストを全部見る
-  //   const breadcrumb = new Breadcrumb();
-  //   for (const a of loadedData.articles) {
-  //     breadcrumb.push(a.breadLinks);
-  //   }
-  //   // key:タグ名 , val:回数
-  //   const tagCount = new Map<string, number>();
-  //   // パンくずリストに含まれないタグを調査
-  //   for (const a of loadedData.articles) {
-  //     for (const tag of a.tags) {
-  //       if (breadcrumb.strExists(tag)) {
-  //         continue;
-  //       }
-  //       const tagData = tagCount.get(tag);
-  //       if (tagData != null) {
-  //         tagCount.set(tag, tagData + 1);
-  //       } else {
-  //         tagCount.set(tag, 1);
-  //       }
-  //     }
-  //   }
-  //   const result: { tag: string, category: string, count: number }[] = [];
-  //   for (const [name, count] of tagCount) {
-  //     result.push({ tag: name, count: count, category: "" });
-  //   }
-  //   for (const b of breadcrumb.getFlatArray()) {
-  //     const breadcrumbName = b.breadcrumb[b.breadcrumb.length - 1];//パンくずリストの最後の項目
-  //     const category = b.breadcrumb[0];//カテゴリ名
-  //     result.push({ tag: breadcrumbName, count: b.count, category: category });
-  //   }
-  //   return result;
-  // }
 }
 type TagName = string;
 class CategoryTag {
@@ -165,12 +144,18 @@ class Article {
       return this.tagsCache;
     }
     const tags: { name: string, category: string | "" }[] = [];
-    for (const v of this.data.tags) {
-      tags.push({ name: v, category: "" })
-    };
     const category = this.data.breadLinks[0];
+    // パンくずリストとタグに同じ文字が入っている場合がある。その場合はパンくずリスト優先
+    // 例: パンくずリスト：ホビー＞コスプレ  タグ：コスプレ／コミケ／独自取材
+
     for (const v of this.data.breadLinks) {
       tags.push({ name: v, category: category });
+    };
+    for (const v of this.data.tags) {
+      if (this.data.breadLinks.includes(v)) {
+        continue;
+      }
+      tags.push({ name: v, category: "" })
     };
     this.tagsCache = tags;
     return tags;
