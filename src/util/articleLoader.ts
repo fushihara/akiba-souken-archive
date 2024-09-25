@@ -27,7 +27,7 @@ export class ArticleLoader {
     return loadedData;
   }
   async getCategoryTag() {
-    const loadedData = await this._loadData();
+    const loadedData = await this.loadData();
     return loadedData.categoryTag;
   }
   /**
