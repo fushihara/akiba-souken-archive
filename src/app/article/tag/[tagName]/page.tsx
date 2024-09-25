@@ -14,7 +14,7 @@ export async function generateMetadata(context: PageType) {
 export default async function Page(context: PageType) {
   const nowPageTagName = decodeURIComponent(context.params.tagName);
   const loadedData = await ArticleLoader.instance.loadData().then(articles => {
-    const filterd = articles.filter(article => {
+    const filterd = articles.articles.filter(article => {
       if (article.tags.includes(nowPageTagName)) {
         return true;
       }
@@ -34,8 +34,10 @@ export default async function Page(context: PageType) {
   );
 }
 export async function generateStaticParams() {
-  const tagList = await ArticleLoader.instance.getTagList();
-  return tagList.map((data, index) => {
-    return { tagName: data.tag };
-  });
+  const articleData = await ArticleLoader.instance.loadData();
+  const result: { tagName: string }[] = [];
+  for (const tag of articleData.categoryTag.data.keys()) {
+    result.push({ tagName: tag });
+  }
+  return result;
 }

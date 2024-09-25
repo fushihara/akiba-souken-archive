@@ -14,7 +14,10 @@ const MAX_ITEM_LIMIT = process.env["AKIBA_SOUKEN_MAX_ITEM_LIMIT"];
 export class ArticleLoader {
   static instance = new ArticleLoader();
   private constructor() { }
-  private dataCache: Awaited<ReturnType<ArticleLoader["_loadData"]>> | null = null;
+  private dataCache: {
+    articles: Article[],
+    categoryTag: CategoryTag,
+  } | null = null;
   async loadData() {
     if (this.dataCache != null) {
       return this.dataCache;
@@ -29,81 +32,149 @@ export class ArticleLoader {
       const jsonObj = JSON.parse(text);
       return jsonObj;
     });
-    const parsedObj = zodType.parse(jsonStr);
+    const parsedObj = zodType.parse(jsonStr).map(v => new Article(v));
     parsedObj.sort((a, b) => {
       return b.timestampMs - a.timestampMs;
     });
     if (MAX_ITEM_LIMIT != null) {
       parsedObj.length = Math.min(Number(MAX_ITEM_LIMIT), parsedObj.length);
     }
-    return parsedObj;
-  }
-  async getCategoryList() {
-    const loadedData = await this.loadData();
-    // key:カテゴリ名 , val:回数
-    const categoryCount = new Map<string, number>();
-    for (const a of loadedData) {
-      if (a.breadLinks.length == 0) {
-        continue;
+    const categoryTagData = new CategoryTag();
+    parsedObj.forEach(v => {
+      for (const tag of v.tags2) {
+        categoryTagData.put(tag.category, tag.name);
       }
-      const category = a.breadLinks[0];
-      if (categoryCount.has(category)) {
-        categoryCount.set(category, categoryCount.get(category)! + 1);
-      } else {
-        categoryCount.set(category, 1);
-      }
-    }
-    const categoryList: { name: string, count: number }[] = [];
-    for (const [name, count] of categoryCount) {
-      categoryList.push({ name: name, count });
-    }
-    categoryList.sort((a, b) => {
-      return b.count - a.count;
     });
-    return categoryList;
+    return {
+      articles: parsedObj,
+      categoryTag: categoryTagData,
+    };
   }
   /**
    * 
    * @returns [{tag:"タグ名",category:string,count:100}] の値。カテゴリに属していないタグはカテゴリが空文字。  
    * カテゴリ自体を指す場合は {tag:"ホビー",category:"ホビー",count:100} の様に同じ値が入る事がある。  
    * ソート順は未定義
+   * @deprecated
    */
-  async getTagList() {
-    const loadedData = await this.loadData();
-    // 先にパンくずリストを全部見る
-    const breadcrumb = new Breadcrumb();
-    for (const a of loadedData) {
-      breadcrumb.push(a.breadLinks);
+  // async getTagList() {
+  //   const loadedData = await this.loadData();
+  //   // 先にパンくずリストを全部見る
+  //   const breadcrumb = new Breadcrumb();
+  //   for (const a of loadedData.articles) {
+  //     breadcrumb.push(a.breadLinks);
+  //   }
+  //   // key:タグ名 , val:回数
+  //   const tagCount = new Map<string, number>();
+  //   // パンくずリストに含まれないタグを調査
+  //   for (const a of loadedData.articles) {
+  //     for (const tag of a.tags) {
+  //       if (breadcrumb.strExists(tag)) {
+  //         continue;
+  //       }
+  //       const tagData = tagCount.get(tag);
+  //       if (tagData != null) {
+  //         tagCount.set(tag, tagData + 1);
+  //       } else {
+  //         tagCount.set(tag, 1);
+  //       }
+  //     }
+  //   }
+  //   const result: { tag: string, category: string, count: number }[] = [];
+  //   for (const [name, count] of tagCount) {
+  //     result.push({ tag: name, count: count, category: "" });
+  //   }
+  //   for (const b of breadcrumb.getFlatArray()) {
+  //     const breadcrumbName = b.breadcrumb[b.breadcrumb.length - 1];//パンくずリストの最後の項目
+  //     const category = b.breadcrumb[0];//カテゴリ名
+  //     result.push({ tag: breadcrumbName, count: b.count, category: category });
+  //   }
+  //   return result;
+  // }
+}
+type TagName = string;
+class CategoryTag {
+  /**
+   * key:タグ名
+   * val:カテゴリ名
+   */
+  readonly data = new Map<TagName, { category: string | null, count: number }>();
+  put(category: string, tag: string) {
+    if (tag == "") {
+      throw new Error(`タグが空文字です`)
     }
-    // key:タグ名 , val:回数
-    const tagCount = new Map<string, number>();
-    // パンくずリストに含まれないタグを調査
-    for (const a of loadedData) {
-      for (const tag of a.tags) {
-        if (breadcrumb.strExists(tag)) {
-          continue;
-        }
-        const tagData = tagCount.get(tag);
-        if (tagData != null) {
-          tagCount.set(tag, tagData + 1);
-        } else {
-          tagCount.set(tag, 1);
-        }
+    const storeCategory = this.data.get(tag);
+    if (storeCategory == null) {
+      this.data.set(tag, { category: category, count: 1 });
+    } else if (storeCategory.category != category) {
+      if (category == "" || storeCategory.category == "") {
+        storeCategory.count += 1;
+      } else if (category != "" || storeCategory.category == "") {
+        storeCategory.count += 1;
+        storeCategory.category = category;
+      } else if (category == "" || storeCategory.category != "") {
+        storeCategory.count += 1;
+        //} else if(category != "" || storeCategory.category != ""){
+      } else {
+        throw new Error(`カテゴリが不一致. tag:${tag} , storeCategory:${storeCategory.category} , newCategory:${category}`);
       }
+    } else {
+      storeCategory.count += 1;
     }
-    const result: { tag: string, category: string, count: number }[] = [];
-    for (const [name, count] of tagCount) {
-      result.push({ tag: name, count: count, category: "" });
-    }
-    for (const b of breadcrumb.getFlatArray()) {
-      const breadcrumbName = b.breadcrumb[b.breadcrumb.length - 1];//パンくずリストの最後の項目
-      const category = b.breadcrumb[0];//カテゴリ名
-      result.push({ tag: breadcrumbName, count: b.count, category: category });
-    }
-    return result;
   }
 }
-
+class Article {
+  constructor(
+    private readonly data: z.infer<typeof zodType>[number]
+  ) {
+    this.validate();
+  }
+  get timestampMs() {
+    return this.data.timestampMs;
+  }
+  get breadLinks() {
+    return this.data.breadLinks;
+  }
+  get tags() {
+    return this.data.tags;
+  }
+  get maxPageNumber() {
+    return this.data.maxPageNumber;
+  }
+  get articleId() {
+    return this.data.articleId;
+  }
+  get title() {
+    return this.data.title;
+  }
+  get tags2() {
+    const result = this.getTags();
+    return result;
+  }
+  private tagsCache: { name: string, category: string | "" }[] | null = null;
+  private getTags() {
+    if (this.tagsCache != null) {
+      return this.tagsCache;
+    }
+    const tags: { name: string, category: string | "" }[] = [];
+    for (const v of this.data.tags) {
+      tags.push({ name: v, category: "" })
+    };
+    const category = this.data.breadLinks[0];
+    for (const v of this.data.breadLinks) {
+      tags.push({ name: v, category: category });
+    };
+    this.tagsCache = tags;
+    return tags;
+  }
+  private validate() {
+    // パンくずリストは必ず1件以上あること
+    if (1 <= this.breadLinks.length) {
+    } else {
+      throw new Error(`パンくずリストの個数が不足しています`)
+    }
+  }
+}
 
 type BreadcrumbInternal = { name: string, count: number, child: BreadcrumbInternal[] };
 /**

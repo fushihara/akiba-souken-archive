@@ -22,12 +22,12 @@ export async function generateMetadata(context: PageType) {
 export default async function Page(context: PageType) {
   const pageId = getPageIdNumber(context.params.pageId);
   const loadedData = await ArticleLoader.instance.loadData();
-  const chunkdData = chunk(loadedData, PPV);
+  const chunkdData = chunk(loadedData.articles, PPV);
   const displayData = chunkdData[pageId - 1];
   return (
     <div className="p-1 gap-16">
       {pagenationElement(pageId, chunkdData.length)}
-      <div className="text-right">全:{loadedData.length}件</div>
+      <div className="text-right">全:{loadedData.articles.length}件</div>
       {ArticleListElement(displayData)}
       {pagenationElement(pageId, chunkdData.length)}
     </div>
@@ -142,7 +142,7 @@ if (!Number.isInteger(PPV)) {
 //export const dynamicParams = true;
 export async function generateStaticParams() {
   const loadedData = await ArticleLoader.instance.loadData();
-  const chunkdData = chunk(loadedData, PPV);
+  const chunkdData = chunk(loadedData.articles, PPV);
   return chunkdData.map((data, index) => {
     return { pageId: `page-${index + 1}`, data: data };
   });

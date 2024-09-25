@@ -13,7 +13,7 @@ export async function generateMetadata(context: PageType) {
   }
 }
 export default async function Page(context: PageType) {
-  const tagList = await ArticleLoader.instance.getTagList();
+  const articleData = await ArticleLoader.instance.loadData();
   type TAG = { tag: string, count: number, primary?: boolean };
   const elementListPcPart: TAG[] = [];
   const elementListAkiba: TAG[] = [];
@@ -22,25 +22,25 @@ export default async function Page(context: PageType) {
   const elementListGame: TAG[] = [];
   const elementListHobby: TAG[] = [];
   const elementListOther: TAG[] = [];
-  for (const tag of tagList) {
-    if (tag.category == "PCパーツ") {
-      elementListPcPart.push({ tag: tag.tag, count: tag.count, primary: tag.tag == "PCパーツ" });
-    } else if (tag.category == "アキバ") {
-      elementListAkiba.push({ tag: tag.tag, count: tag.count, primary: tag.tag == "アキバ" });
-    } else if (tag.category == "アニメ") {
-      elementListAnime.push({ tag: tag.tag, count: tag.count, primary: tag.tag == "アニメ" });
-    } else if (tag.category == "ゲーム") {
-      elementListGame.push({ tag: tag.tag, count: tag.count, primary: tag.tag == "ゲーム" });
-    } else if (tag.category == "ホビー") {
-      elementListHobby.push({ tag: tag.tag, count: tag.count, primary: tag.tag == "ホビー" });
-    } else if (tag.tag.match(/^\d+(春|夏|秋|冬)?アニメ$/)) {
-      elementListAnimeSeason.push({ tag: tag.tag, count: tag.count });
-    } else if (tag.tag == "G.E.M.シリーズ") {
-      elementListHobby.push({ tag: tag.tag, count: tag.count });
-    } else if (["3DS", "PS4ゲームレビュー", "PS Vita", "PS5ゲームレビュー", "Switchインディーズ", "ポケモンGO", "Steamゲームレビュー"].includes(tag.tag)) {
-      elementListGame.push({ tag: tag.tag, count: tag.count });
+  for (const [tag, categoryAndCount] of articleData.categoryTag.data.entries()) {
+    if (categoryAndCount.category == "PCパーツ") {
+      elementListPcPart.push({ tag: tag, count: categoryAndCount.count, primary: tag == "PCパーツ" });
+    } else if (categoryAndCount.category == "アキバ") {
+      elementListAkiba.push({ tag: tag, count: categoryAndCount.count, primary: tag == "アキバ" });
+    } else if (categoryAndCount.category == "アニメ") {
+      elementListAnime.push({ tag: tag, count: categoryAndCount.count, primary: tag == "アニメ" });
+    } else if (categoryAndCount.category == "ゲーム") {
+      elementListGame.push({ tag: tag, count: categoryAndCount.count, primary: tag == "ゲーム" });
+    } else if (categoryAndCount.category == "ホビー") {
+      elementListHobby.push({ tag: tag, count: categoryAndCount.count, primary: tag == "ホビー" });
+    } else if (tag.match(/^\d+(春|夏|秋|冬)?アニメ$/)) {
+      elementListAnimeSeason.push({ tag: tag, count: categoryAndCount.count });
+    } else if (tag == "G.E.M.シリーズ") {
+      elementListHobby.push({ tag: tag, count: categoryAndCount.count });
+    } else if (["3DS", "PS4ゲームレビュー", "PS Vita", "PS5ゲームレビュー", "Switchインディーズ", "ポケモンGO", "Steamゲームレビュー"].includes(tag)) {
+      elementListGame.push({ tag: tag, count: categoryAndCount.count });
     } else {
-      elementListOther.push({ tag: tag.tag, count: tag.count });
+      elementListOther.push({ tag: tag, count: categoryAndCount.count });
     }
   }
   return (
