@@ -6,7 +6,8 @@ dateformat.i18n.dayNames = [
   '日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'
 ];
 type DisplayData = Awaited<ReturnType<ArticleLoader["loadData"]>>["articles"][number];
-export function ArticleListElement(displayData: DisplayData[]) {
+type CategoryTagData = Awaited<ReturnType<ArticleLoader["loadData"]>>["categoryTag"]
+export function ArticleListElement(displayData: DisplayData[], categoryTag: CategoryTagData) {
   return (
     <table className="w-full">
       <thead className="bg-white border-b sticky top-0 text-md font-medium text-gray-900">
@@ -60,7 +61,14 @@ export function ArticleListElement(displayData: DisplayData[]) {
               if (d.breadLinks.indexOf(bread) != 0) {
                 breadChildElement.push(<span>＞</span>);
               }
-              breadChildElement.push(<Link href={`/article/tag/${bread}`} className="transition duration-300 ease-in-out hover:text-gray-900" key={`bread-${bread}`}>{bread}</Link>);
+              const tagCount = categoryTag.getTagCount(bread);
+              breadChildElement.push(
+                <Link
+                  href={`/article/tag/${bread}`}
+                  className="transition duration-300 ease-in-out hover:text-gray-900"
+                  key={`bread-${bread}`}
+                >{bread}({tagCount})</Link>
+              );
             }
             breadElement = (
               <span className="flex gap-0.5">
@@ -76,8 +84,15 @@ export function ArticleListElement(displayData: DisplayData[]) {
             for (const tag of d.tags) {
               if (d.tags.indexOf(tag) != 0) {
                 tagChildElements.push(<span>／</span>);
-              }
-              tagChildElements.push(<Link href={`/article/tag/${tag}`} className="transition duration-300 ease-in-out hover:text-gray-900" key={`tag-${tag}`}>{tag}</Link>);
+              };
+              const tagCount = categoryTag.getTagCount(tag);
+              tagChildElements.push(
+                <Link
+                  href={`/article/tag/${tag}`}
+                  className="transition duration-300 ease-in-out hover:text-gray-900"
+                  key={`tag-${tag}`}
+                >{tag}({tagCount})</Link>
+              );
             }
             tagElement = (
               <span className="flex gap-0.5">

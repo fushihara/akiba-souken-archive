@@ -28,7 +28,7 @@ export default async function Page(context: PageType) {
     <div className="p-1 gap-16">
       {pagenationElement(pageId, chunkdData.length)}
       <div className="text-right">全:{loadedData.articles.length}件</div>
-      {ArticleListElement(displayData)}
+      {ArticleListElement(displayData, loadedData.categoryTag)}
       {pagenationElement(pageId, chunkdData.length)}
     </div>
   );

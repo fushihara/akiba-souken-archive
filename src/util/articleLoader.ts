@@ -122,6 +122,14 @@ class CategoryTag {
       storeCategory.count += 1;
     }
   }
+  getTagCount(tagName: string) {
+    const data = this.data.get(tagName);
+    if (data == null) {
+      throw new Error(`タグ名:[${tagName}]`);
+    }
+    const count = data.count;
+    return count;
+  }
 }
 class Article {
   constructor(
