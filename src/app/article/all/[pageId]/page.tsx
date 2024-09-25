@@ -21,8 +21,7 @@ export async function generateMetadata(context: PageType) {
 }
 export default async function Page(context: PageType) {
   const pageId = getPageIdNumber(context.params.pageId);
-  const al = new ArticleLoader()
-  const loadedData = await al.loadData();
+  const loadedData = await ArticleLoader.instance.loadData();
   const chunkdData = chunk(loadedData, PPV);
   const displayData = chunkdData[pageId - 1];
   return (
@@ -142,8 +141,7 @@ if (!Number.isInteger(PPV)) {
 }
 //export const dynamicParams = true;
 export async function generateStaticParams() {
-  const al = new ArticleLoader()
-  const loadedData = await al.loadData();
+  const loadedData = await ArticleLoader.instance.loadData();
   const chunkdData = chunk(loadedData, PPV);
   return chunkdData.map((data, index) => {
     return { pageId: `page-${index + 1}`, data: data };

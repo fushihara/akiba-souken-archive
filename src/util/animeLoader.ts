@@ -58,18 +58,19 @@ const zodType = z.array(
 );
 const MAX_ITEM_LIMIT = process.env["AKIBA_SOUKEN_MAX_ITEM_LIMIT"];
 export type AnimeLoaderData = z.infer<typeof zodType>[number]
-class AnimeLoader {
+export class AnimeLoader {
+  static instance = new AnimeLoader();
   constructor() { }
-  private dataCache: Awaited<ReturnType<AnimeLoader["loadData_"]>> | null = null;
+  private dataCache: Awaited<ReturnType<AnimeLoader["_loadData"]>> | null = null;
   async loadData() {
     if (this.dataCache != null) {
       return this.dataCache;
     }
-    const loadedData = await this.loadData_();
+    const loadedData = await this._loadData();
     this.dataCache = loadedData;
     return loadedData;
   }
-  private async loadData_() {
+  private async _loadData() {
     const articleJsonPath = process.env["AKIBA_SOUKEN_ANIME_JSON"]!;
     //console.log(`[${articleJsonPath}]`);
     const jsonStr = await readFile(articleJsonPath, { encoding: "utf-8" }).then(text => {
@@ -90,4 +91,3 @@ class AnimeLoader {
     return parsedObj;
   }
 }
-export const animeLoader = new AnimeLoader();

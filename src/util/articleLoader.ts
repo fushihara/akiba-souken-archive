@@ -12,8 +12,18 @@ const zodType = z.array(
 );
 const MAX_ITEM_LIMIT = process.env["AKIBA_SOUKEN_MAX_ITEM_LIMIT"];
 export class ArticleLoader {
-  constructor() { }
+  static instance = new ArticleLoader();
+  private constructor() { }
+  private dataCache: Awaited<ReturnType<ArticleLoader["_loadData"]>> | null = null;
   async loadData() {
+    if (this.dataCache != null) {
+      return this.dataCache;
+    }
+    const loadedData = await this._loadData();
+    this.dataCache = loadedData;
+    return loadedData;
+  }
+  private async _loadData() {
     const articleJsonPath = process.env["AKIBA_SOUKEN_ARTICLE_JSON"]!;
     const jsonStr = await readFile(articleJsonPath, { encoding: "utf-8" }).then(text => {
       const jsonObj = JSON.parse(text);
@@ -28,7 +38,6 @@ export class ArticleLoader {
     }
     return parsedObj;
   }
-
   async getCategoryList() {
     const loadedData = await this.loadData();
     // key:カテゴリ名 , val:回数
@@ -94,6 +103,7 @@ export class ArticleLoader {
     return result;
   }
 }
+
 
 type BreadcrumbInternal = { name: string, count: number, child: BreadcrumbInternal[] };
 /**

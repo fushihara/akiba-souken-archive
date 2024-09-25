@@ -13,7 +13,7 @@ export async function generateMetadata(context: PageType) {
   }
 }
 export default async function Page(context: PageType) {
-  const tagList = await new ArticleLoader().getTagList();
+  const tagList = await ArticleLoader.instance.getTagList();
   type TAG = { tag: string, count: number, primary?: boolean };
   const elementListPcPart: TAG[] = [];
   const elementListAkiba: TAG[] = [];

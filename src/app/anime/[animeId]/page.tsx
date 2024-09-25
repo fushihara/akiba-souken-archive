@@ -1,7 +1,7 @@
 import "./style.css";
 import style from "./style.module.css";
 import dateformat from "dateformat";
-import { animeLoader, AnimeLoaderData } from "../../../util/animeLoader";
+import { AnimeLoader, AnimeLoaderData } from "../../../util/animeLoader";
 import Link from "next/link";
 dateformat.i18n.dayNames = [
   '日', '月', '火', '水', '木', '金', '土',
@@ -12,7 +12,7 @@ type PageType = {
   params: { animeId: string, }
 }
 export async function generateMetadata(context: PageType) {
-  const loadedData = await animeLoader.loadData().then(d => {
+  const loadedData = await AnimeLoader.instance.loadData().then(d => {
     const r = d.find(a => a.animeId == Number(context.params.animeId))!;
     return r;
   });
@@ -21,7 +21,7 @@ export async function generateMetadata(context: PageType) {
   }
 }
 export default async function Page(context: PageType) {
-  const loadedData = await animeLoader.loadData().then(d => {
+  const loadedData = await AnimeLoader.instance.loadData().then(d => {
     const r = d.find(a => a.animeId == Number(context.params.animeId))!;
     return r;
   });;
@@ -224,7 +224,7 @@ function episodeHitokotoList(list: AnimeLoaderData["episodeHitokotoList"]) {
   </>);
 }
 export async function generateStaticParams() {
-  const loadedData = await animeLoader.loadData();
+  const loadedData = await AnimeLoader.instance.loadData();
   return loadedData.map(c => {
     return { animeId: String(c.animeId) };
   }) satisfies PageType["params"][];

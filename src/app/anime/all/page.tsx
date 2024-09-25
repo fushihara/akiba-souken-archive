@@ -1,4 +1,4 @@
-import { animeLoader } from "../../../util/animeLoader";
+import { AnimeLoader } from "../../../util/animeLoader";
 import style from "./style.module.css";
 import Link from "next/link";
 type PageType = {
@@ -11,7 +11,7 @@ export async function generateMetadata(context: PageType) {
   }
 }
 export default async function Page(context: PageType) {
-  const loadedData = await animeLoader.loadData();
+  const loadedData = await AnimeLoader.instance.loadData();
   return (
     <div className="p-1 gap-16">
       <div className="text-right">全:{loadedData.length}件</div>
