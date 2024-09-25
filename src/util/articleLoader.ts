@@ -34,7 +34,7 @@ export class ArticleLoader {
    * 指定のタグ、パンくずリストの記事一覧を取得
    */
   async getTagArticle(tagName: string) {
-    const loadedData = await this._loadData();
+    const loadedData = await this.loadData();
     const filterdArticles = loadedData.articles.filter(article => {
       if (article.tags.includes(tagName)) {
         return true;
