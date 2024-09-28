@@ -47,6 +47,8 @@ function parseParam(paramString: string) {
     return `https://akiba-souken.com/anime/${m[1]}/review/?page=${m[2]}`;
   } else if (m = paramString.match(/^anime-(\d+)-review-(\d+)$/)) {
     return `https://akiba-souken.com/anime/${m[1]}/review/${m[2]}/`;
+  } else if (m = paramString.match(/^anime-matome-(.+?)$/)) {
+    return `https://akiba-souken.com/anime/matome/${m[1]}/`;
   }
   return null;
 }

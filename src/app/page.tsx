@@ -21,10 +21,10 @@ export default function Home() {
       https://github.com/fushihara/akiba-souken-archive<br />
       このサイトの記事一覧などが欲しい場合は、スクレイピングをするより上記レポジトリからファイルを落としたほうが早いです。<br />
       スクレイピングに使ったツール一式は以下の通りです。こちらのスクリプトはdenoを使っています。DLしたhtmlをsqliteに保存して、同じ内容で複数アクセスが起きないように工夫しています。<br />
-      xxxxx
+      https://github.com/fushihara/akiba-souken-crawler
       <p />
       このアーカイブサイトは閉鎖決定時点の全てのコンテンツを網羅している訳ではありません。<br />
-      通常のarticle形式以外の、投票( https://akiba-souken.com/vote/ )やアニメまとめ( https://akiba-souken.com/anime/matome/ )、アニメランキング( https://akiba-souken.com/anime/ranking/ )は抜けています。<br />
+      通常のarticle形式以外の、投票( https://akiba-souken.com/vote/ )、アニメランキング( https://akiba-souken.com/anime/ranking/ )は抜けています。<br />
     </div>
   );
 }

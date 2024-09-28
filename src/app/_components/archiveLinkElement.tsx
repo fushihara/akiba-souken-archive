@@ -19,8 +19,12 @@ type AnimeReviewItem = {
   animeId: number,
   reviewId: number,
 };
+type AnimeMatome = {
+  type: "AnimeMatome",
+  matomeId: string,
+};
 type Common = { showLinkUnderline?: boolean }
-type Option = (ArticlePage | AnimeTop | AnimeReviewList | AnimeReviewItem) & Common;
+type Option = (ArticlePage | AnimeTop | AnimeReviewList | AnimeReviewItem | AnimeMatome) & Common;
 export function ArciveLinkElement(option: Option) {
   const officialLinkTitle = `公式のakiba-souken.com へのリンク。閉鎖後は繋がらなくなるはず`;
   const iaSearchResultLinkTitle = `InternetArchive の検索結果へのリンク`;
@@ -53,6 +57,9 @@ export function ArciveLinkElement(option: Option) {
   } else if (option.type == "AnimeReviewItem") {
     originalUrl = `https://akiba-souken.com/anime/${option.animeId}/review/${option.reviewId}`;
     iframeSrc = `anime-${option.animeId}-review-${option.reviewId}`;
+  } else if (option.type == "AnimeMatome") {
+    originalUrl = `https://akiba-souken.com/anime/matome/${option.matomeId}/`;
+    iframeSrc = `anime-matome-${option.matomeId}`;
   } else {
     throw new Error();
   }

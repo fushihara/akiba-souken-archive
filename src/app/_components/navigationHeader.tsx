@@ -24,6 +24,9 @@ export function NavigationHeader() {
             <li>
               <Link href={"/anime/all"}>アニメ一覧</Link>
             </li>
+            <li>
+              <Link href={"/anime/matome"}>アニメまとめ</Link>
+            </li>
           </ul>
         </div>
       </div>
