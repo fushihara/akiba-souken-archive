@@ -1,7 +1,7 @@
 import "./style.css"
 export default function Home() {
   return (
-    <div className="min-h-screen p-8 pb-20">
+    <div className="p-8">
       アキバ総研( <a href="https://akiba-souken.com/" target="_blank" className={`original-href`}>https://akiba-souken.com/</a> ) の記事一覧をアーカイブしたページです。このサイト内にアキバ総研の記事本文はありません。<br />
       アキバ総研は2024/08/01にサービス終了のアナウンスが行われ、2024/08/31に記事の更新が停止しました。<br />
       このアーカイブは2024/08/31～2024/09/30 の間に取得していますが、特定の瞬間のスナップショットではないので、データの不整合がある可能性があります。<br />

@@ -21,6 +21,7 @@ export default function RootLayout({
         {children}
         <div>
           全てのデータは<a href="https://akiba-souken.com/" target="_blank" className="original-href">アキバ総研</a>より。
+          Github:<a href="https://github.com/fushihara/akiba-souken-archive" target="_blank" className="original-href">archive</a> , <a href="https://github.com/fushihara/akiba-souken-crawler" target="_blank" className="original-href">crawler</a>
         </div>
       </body>
     </html>
