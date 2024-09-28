@@ -2,6 +2,7 @@ import Link from "next/link";
 import dateformat from "dateformat";
 import { ArticleLoader } from "../../../util/articleLoader";
 import { TableElement } from "../../_components/tableElements";
+import { ArciveLinkElement } from "../../_components/archiveLinkElement";
 dateformat.i18n.dayNames = [
   '日', '月', '火', '水', '木', '金', '土',
   '日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'
@@ -22,9 +23,6 @@ export function ArticleListElement(displayData: DisplayData[], categoryTag: Cate
   return result;
 }
 function getDisplayData(d: DisplayData, categoryTag: CategoryTagData) {
-  const officialLinkTitle = `公式のakiba-souken.com へのリンク。閉鎖後は繋がらなくなるはず`;
-  const iaSearchResultLinkTitle = `InternetArchive の検索結果へのリンク`;
-  const iframeLinkTitle = `Iframeを使ってInternetArchiveに記録されたアーカイブを表示します`;
   const topCategory = d.breadLinks[0];
   const timestampStr = dateformat(new Date(d.timestampMs), "yyyy/mm/dd(ddd)HH:MM");
   const originalUrl = `https://akiba-souken.com/article/${d.articleId}/`;
@@ -38,9 +36,7 @@ function getDisplayData(d: DisplayData, categoryTag: CategoryTagData) {
     for (let page = 2; page <= d.maxPageNumber; page++) {
       result.push(
         <div className="flex gap-4 text-xs text-gray-300" key={`page-${page}`}>
-          <a href={`https://akiba-souken.com/article/${d.articleId}/?page=${page}`} target="_blank" className="transition duration-300 ease-in-out hover:text-gray-900" title={officialLinkTitle}>公式</a>
-          <a href={`https://web.archive.org/web/*/https://akiba-souken.com/article/${d.articleId}/?page=${page}`} target="_blank" className="transition duration-300 ease-in-out hover:text-gray-900" title={iaSearchResultLinkTitle}>IA検索結果</a>
-          <Link href={`/iframe?src=article-${d.articleId}-${page}`} className="transition duration-300 ease-in-out hover:text-gray-900" title={iframeLinkTitle}>IAをiframe</Link> Page:{page}
+          {ArciveLinkElement({ type: "article", articleId: d.articleId, subPageNumber: page })}
         </div>
       );
     }
@@ -106,9 +102,7 @@ function getDisplayData(d: DisplayData, categoryTag: CategoryTagData) {
       element: <>
         <div>{d.title}</div>
         <div className="flex gap-4 text-xs text-gray-300">
-          <a href={originalUrl} target="_blank" className="transition duration-300 ease-in-out hover:text-gray-900" title={officialLinkTitle}>公式</a>
-          <a href={`https://web.archive.org/web/*/${originalUrl}`} target="_blank" className="transition duration-300 ease-in-out hover:text-gray-900" title={iaSearchResultLinkTitle}>IA検索結果</a>
-          <Link href={`/iframe?src=article-${d.articleId}`} className="transition duration-300 ease-in-out hover:text-gray-900" title={iframeLinkTitle}>IAをiframe</Link>
+          {ArciveLinkElement({ type: "article", articleId: d.articleId })}
           {breadElement}
           {tagElement}
           {hatebuElement}

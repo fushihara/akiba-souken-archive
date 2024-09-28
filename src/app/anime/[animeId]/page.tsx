@@ -3,6 +3,7 @@ import style from "./style.module.css";
 import dateformat from "dateformat";
 import { AnimeLoader, AnimeLoaderData } from "../../../util/animeLoader";
 import Link from "next/link";
+import { ArciveLinkElement } from "../../_components/archiveLinkElement";
 dateformat.i18n.dayNames = [
   '日', '月', '火', '水', '木', '金', '土',
   '日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'
@@ -43,9 +44,7 @@ export default async function Page(context: PageType) {
       <div>
         <span>アキバ総研のアニメ個別URL：</span>
         <span className="inline-flex gap-4">
-          <a href={`https://akiba-souken.com/anime/${loadedData.animeId}/`} target="_blank" className={`${style["a"]}`}>公式</a>
-          <a href={`https://web.archive.org/web/*/https://akiba-souken.com/anime/${loadedData.animeId}/`} target="_blank" className={`${style["a"]}`}>IA検索結果</a>
-          <Link href={`/iframe?src=anime-${loadedData.animeId}`} className={`${style["a"]}`}>IAをiframe</Link>
+          {ArciveLinkElement({ type: "animeTop", animeId: loadedData.animeId, showLinkUnderline: true })}
         </span>
       </div>
       {titleReviewScore(loadedData.titleReviewScore)}
@@ -114,22 +113,17 @@ function titleReviewList(animeId: number, list: AnimeLoaderData["titleReviewList
         <div key={`review-list-${i}`}>
           <span>新着 {itemFrom}～{itemTo}件目</span>
           <span className="inline-flex gap-4">
-            <a href={`https://akiba-souken.com/anime/${animeId}/review/`} target="_blank" className={`${style["a"]}`}>公式</a>
-            <a href={`https://web.archive.org/web/*/https://akiba-souken.com/anime/${animeId}/review/`} target="_blank" className={`${style["a"]}`}>IA検索結果</a>
-            <Link href={`/iframe?src=anime-${animeId}-review`} className={`${style["a"]}`}>IAをiframe</Link>
+            {ArciveLinkElement({ type: "animeReviewList", animeId: animeId, pageNumber: i, showLinkUnderline: true })}
           </span>
         </div>
       );
     } else {
       // 2ページ目移行
-      const page = i + 1;
       reviewListLinks.push(
         <div key={`review-list-${i}`}>
           <span>新着 {itemFrom}～{itemTo}件目</span>
           <span className="inline-flex gap-4">
-            <a href={`https://akiba-souken.com/anime/${animeId}/review/?page=${page}`} target="_blank" className={`${style["a"]}`}>公式</a>
-            <a href={`https://web.archive.org/web/*/https://akiba-souken.com/anime/${animeId}/review/?page=${page}`} target="_blank" className={`${style["a"]}`}>IA検索結果</a>
-            <Link href={`/iframe?src=anime-${animeId}-review-p${page}`} className={`${style["a"]}`}>IAをiframe</Link>
+            {ArciveLinkElement({ type: "animeReviewList", animeId: animeId, pageNumber: i, showLinkUnderline: true })}
           </span>
         </div>
       );
@@ -146,9 +140,7 @@ function titleReviewList(animeId: number, list: AnimeLoaderData["titleReviewList
         <div key={`review-list-${v.reviewId}`}>
           <span className="inline-flex gap-4">
             <span>{index + 1}/{list.length}</span>
-            <a href={`https://akiba-souken.com/anime/${animeId}/review/${v.reviewId}/`} target="_blank" className={`${style["a"]}`}>公式</a>
-            <a href={`https://web.archive.org/web/*/https://akiba-souken.com/anime/${animeId}/review/${v.reviewId}/`} target="_blank" className={`${style["a"]}`}>IA検索結果</a>
-            <Link href={`/iframe?src=anime-${animeId}-review-${v.reviewId}`} className={`${style["a"]}`}>IAをiframe</Link>
+            {ArciveLinkElement({ type: "AnimeReviewItem", animeId: animeId, reviewId: v.reviewId, showLinkUnderline: true })}
             <span>投稿日時:{timestampStr}</span>
             <span>スコア:{v.score}</span>
             <span>ネタバレ:{v.isSpoiler ? "はい" : "いいえ"}</span>

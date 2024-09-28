@@ -20,7 +20,7 @@ export default function RootLayout({
         <NavigationHeader></NavigationHeader>
         {children}
         <div>
-          全てのデータは<a href="https://akiba-souken.com/" target="_blank">アキバ総研</a>より。
+          全てのデータは<a href="https://akiba-souken.com/" target="_blank" className="original-href">アキバ総研</a>より。
         </div>
       </body>
     </html>
