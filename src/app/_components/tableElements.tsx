@@ -11,7 +11,7 @@ export function TableElement(mainOption: MainOption, bodyList: { element: JSX.El
   for (const h of mainOption.header) {
     const index = mainOption.header.indexOf(h);
     headerElementList.push(
-      <th scope="col" className="px-6 py-4 text-left" key={`th-${index}`}>{h.label}</th>
+      <th scope="col" className="px-6 py-4 text-left whitespace-nowrap" key={`th-${index}`}>{h.label}</th>
     );
   }
   const bodyElementList: JSX.Element[] = [];
@@ -30,15 +30,17 @@ export function TableElement(mainOption: MainOption, bodyList: { element: JSX.El
     trIndex += 1;
   }
   return (
-    <table className="w-full">
-      <thead className="bg-white border-b sticky top-0 text-md font-medium text-gray-900">
-        <tr>
-          {headerElementList}
-        </tr>
-      </thead>
-      <tbody className="">
-        {bodyElementList}
-      </tbody>
-    </table>
+    <div className="overflow-x-auto">
+      <table className="w-full">
+        <thead className="bg-white border-b sticky top-0 text-md font-medium text-gray-900">
+          <tr>
+            {headerElementList}
+          </tr>
+        </thead>
+        <tbody className="">
+          {bodyElementList}
+        </tbody>
+      </table>
+    </div>
   );
 }

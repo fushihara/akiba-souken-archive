@@ -71,18 +71,18 @@ export function ArciveLinkElement(option: Option) {
       <a
         href={originalUrl}
         target="_blank"
-        className={`transition duration-300 ease-in-out hover:text-gray-900 ${className}`}
+        className={`transition duration-300 ease-in-out hover:text-gray-900 whitespace-nowrap ${className}`}
         title={officialLinkTitle}
       >公式</a>
       <a
         href={`https://web.archive.org/web/*/${originalUrl}`}
         target="_blank"
-        className={`transition duration-300 ease-in-out hover:text-gray-900 ${className}`}
+        className={`transition duration-300 ease-in-out hover:text-gray-900 whitespace-nowrap ${className}`}
         title={iaSearchResultLinkTitle}
       >IA検索結果</a>
       <Link
         href={`/iframe?src=${iframeSrc}`}
-        className={`transition duration-300 ease-in-out hover:text-gray-900 ${className}`}
+        className={`transition duration-300 ease-in-out hover:text-gray-900 whitespace-nowrap ${className}`}
         title={iframeLinkTitle}
       >IAをiframe</Link>
       {suffixPrivate}

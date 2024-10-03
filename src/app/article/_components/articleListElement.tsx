@@ -46,7 +46,7 @@ function getDisplayData(d: DisplayData, categoryTag: CategoryTagData) {
   let breadElement = (<span key={`notice`}></span>);
   if (0 < d.breadLinks.length) {
     const breadChildElement: JSX.Element[] = [];
-    breadChildElement.push(<span className="mr-[-0.5rem]" key={`label`}>パンくずリスト：</span>);
+    breadChildElement.push(<span className="mr-[-0.5rem] whitespace-nowrap" key={`label`}>パンくずリスト：</span>);
     for (const bread of d.breadLinks) {
       if (d.breadLinks.indexOf(bread) != 0) {
         breadChildElement.push(<span>＞</span>);
@@ -55,7 +55,7 @@ function getDisplayData(d: DisplayData, categoryTag: CategoryTagData) {
       breadChildElement.push(
         <Link
           href={`/article/tag/${bread}`}
-          className="transition duration-300 ease-in-out hover:text-gray-900"
+          className="transition duration-300 ease-in-out hover:text-gray-900 whitespace-nowrap"
           key={`bread-${bread}`}
         >{bread}({tagCount})</Link>
       );
@@ -79,7 +79,7 @@ function getDisplayData(d: DisplayData, categoryTag: CategoryTagData) {
       tagChildElements.push(
         <Link
           href={`/article/tag/${tag}`}
-          className="transition duration-300 ease-in-out hover:text-gray-900"
+          className="transition duration-300 ease-in-out hover:text-gray-900 whitespace-nowrap"
           key={`tag-${tag}`}
         >{tag}({tagCount})</Link>
       );
