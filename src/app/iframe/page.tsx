@@ -36,7 +36,7 @@ export default function Page(context: PageType) {
     const newUrlObj = new URL(document.location.href);
     newUrlObj.searchParams.delete("time");
     newUrlObj.searchParams.append("time", String(paramTimeBigint));
-    location.href = newUrlObj;
+    location.href = newUrlObj.toString();
   };
   return (
     <div className="flex-1 flex flex-col">
