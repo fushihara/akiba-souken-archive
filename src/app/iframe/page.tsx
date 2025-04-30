@@ -46,7 +46,7 @@ export default function Page(context: PageType) {
       <div className="w-full flex-1 flex flex-col">
         <div className="text-center text-3xl text-red-600">以下のページはInternetArchiveに保存されている内容です。</div>
         <div className="text-center">iframeに「サービスは終了しました」と表示された場合<button style={{ all: "revert" }} onClick={() => { back1Month() }}>1ヶ月時間を戻す</button>をクリック</div>
-        <iframe src={iframeUrl} sandbox="" credentialless="" className="flex-1 border-solid border-black border p-4 bg-gray-700">
+        <iframe src={iframeUrl} sandbox="" className="flex-1 border-solid border-black border p-4 bg-gray-700">
           Loading
         </iframe>
       </div>
